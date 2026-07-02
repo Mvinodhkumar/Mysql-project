@@ -1,0 +1,398 @@
+mysql> USE CareHomeManagement;
+Database changed
+mysql>
+mysql> CREATE TABLE Residents (
+    ->     resident_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     resident_name VARCHAR(100) NOT NULL,
+    ->     age INT,
+    ->     gender VARCHAR(10)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql>
+mysql> CREATE TABLE Caregivers (
+    ->     caregiver_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     caregiver_name VARCHAR(100) NOT NULL,
+    ->     phone VARCHAR(15),
+    ->     experience_years INT
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> CREATE TABLE Rooms (
+    ->     room_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     room_number VARCHAR(20),
+    ->     room_type VARCHAR(50),
+    ->     capacity INT,
+    ->     caregiver_id INT,
+    ->
+    ->     FOREIGN KEY (caregiver_id)
+    ->     REFERENCES Caregivers(caregiver_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql>
+mysql> CREATE TABLE Admissions (
+    ->     admission_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     admission_date DATE,
+    ->     resident_type VARCHAR(20),
+    ->     status VARCHAR(20),
+    ->
+    ->     resident_id INT,
+    ->     room_id INT,
+    ->
+    ->     FOREIGN KEY (resident_id)
+    ->     REFERENCES Residents(resident_id),
+    ->
+    ->     FOREIGN KEY (room_id)
+    ->     REFERENCES Rooms(room_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql>
+mysql> INSERT INTO Residents
+    -> (resident_name, age, gender)
+    -> VALUES
+    -> ('Rahul',12,'Male'),
+    -> ('Priya',10,'Female'),
+    -> ('Arjun',70,'Male'),
+    -> ('Lakshmi',68,'Female'),
+    -> ('Ramesh',11,'Male'),
+    -> ('Sita',72,'Female');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> INSERT INTO Caregivers
+    -> (caregiver_name, phone, experience_years)
+    -> VALUES
+    -> ('Anita','9876543201',5),
+    -> ('Suresh','9876543202',8),
+    -> ('Meena','9876543203',4),
+    -> ('Rajesh','9876543204',6),
+    -> ('Deepa','9876543205',7),
+    -> ('Kiran','9876543206',9);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> INSERT INTO Rooms
+    -> (room_number, room_type, capacity, caregiver_id)
+    -> VALUES
+    -> ('R101','Children',4,1),
+    -> ('R102','Children',5,2),
+    -> ('R201','Senior Citizens',3,3),
+    -> ('R202','Senior Citizens',4,4),
+    -> ('R103','Children',6,5),
+    -> ('R203','Senior Citizens',2,6);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> INSERT INTO Admissions
+    -> (admission_date, resident_type, status, resident_id, room_id)
+    -> VALUES
+    -> ('2026-06-20','Orphan','Active',1,1),
+    -> ('2026-06-20','Orphan','Active',2,2),
+    -> ('2026-06-21','Old Age','Active',3,3),
+    -> ('2026-06-22','Old Age','Active',4,4),
+    -> ('2026-06-23','Orphan','Active',5,5),
+    -> ('2026-06-24','Old Age','Active',6,6);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> SELECT * FROM residents;
++-------------+---------------+------+--------+
+| resident_id | resident_name | age  | gender |
++-------------+---------------+------+--------+
+|           1 | Rahul         |   12 | Male   |
+|           2 | Priya         |   10 | Female |
+|           3 | Arjun         |   70 | Male   |
+|           4 | Lakshmi       |   68 | Female |
+|           5 | Ramesh        |   11 | Male   |
+|           6 | Sita          |   72 | Female |
++-------------+---------------+------+--------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM caregivers;
++--------------+----------------+------------+------------------+
+| caregiver_id | caregiver_name | phone      | experience_years |
++--------------+----------------+------------+------------------+
+|            1 | Anita          | 9876543201 |                5 |
+|            2 | Suresh         | 9876543202 |                8 |
+|            3 | Meena          | 9876543203 |                4 |
+|            4 | Rajesh         | 9876543204 |                6 |
+|            5 | Deepa          | 9876543205 |                7 |
+|            6 | Kiran          | 9876543206 |                9 |
++--------------+----------------+------------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM rooms;
++---------+-------------+-----------------+----------+--------------+
+| room_id | room_number | room_type       | capacity | caregiver_id |
++---------+-------------+-----------------+----------+--------------+
+|       1 | R101        | Children        |        4 |            1 |
+|       2 | R102        | Children        |        5 |            2 |
+|       3 | R201        | Senior Citizens |        3 |            3 |
+|       4 | R202        | Senior Citizens |        4 |            4 |
+|       5 | R103        | Children        |        6 |            5 |
+|       6 | R203        | Senior Citizens |        2 |            6 |
++---------+-------------+-----------------+----------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM addmissions;
+ERROR 1146 (42S02): Table 'carehomemanagement.addmissions' doesn't exist
+mysql>
+mysql> -- This query displays the names and ages of residents whose age is greater than 60 using the WHERE clause.
+mysql>
+mysql> SELECT resident_name, age
+    -> FROM Residents
+    -> WHERE age > 60;
++---------------+------+
+| resident_name | age  |
++---------------+------+
+| Arjun         |   70 |
+| Lakshmi       |   68 |
+| Sita          |   72 |
++---------------+------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query displays the room numbers and room types of rooms allocated to senior citizens using the WHERE clause.
+mysql>
+mysql> SELECT room_number, room_type
+    -> FROM Rooms
+    -> WHERE room_type = 'Senior Citizens';
++-------------+-----------------+
+| room_number | room_type       |
++-------------+-----------------+
+| R201        | Senior Citizens |
+| R202        | Senior Citizens |
+| R203        | Senior Citizens |
++-------------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query returns the admission IDs and statuses of active admissions using the WHERE clause.
+mysql>
+mysql> SELECT admission_id, status
+    -> FROM Admissions
+    -> WHERE status = 'Active';
++--------------+--------+
+| admission_id | status |
++--------------+--------+
+|            1 | Active |
+|            2 | Active |
+|            3 | Active |
+|            4 | Active |
+|            5 | Active |
+|            6 | Active |
++--------------+--------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query displays caregivers whose experience is between 5 and 8 years using the BETWEEN operator.
+mysql>
+mysql> SELECT caregiver_name, experience_years
+    -> FROM Caregivers
+    -> WHERE experience_years BETWEEN 5 AND 8;
++----------------+------------------+
+| caregiver_name | experience_years |
++----------------+------------------+
+| Anita          |                5 |
+| Suresh         |                8 |
+| Rajesh         |                6 |
+| Deepa          |                7 |
++----------------+------------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> -- INTERMEDIATE QUERIES
+mysql> -- This query calculates the average age of all residents using the AVG aggregate function.
+mysql>
+mysql> SELECT AVG(age) AS Average_Age
+    -> FROM Residents;
++-------------+
+| Average_Age |
++-------------+
+|     40.5000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> -- This query counts the total number of residents based on resident type using COUNT and GROUP BY clauses.
+mysql>
+mysql> SELECT resident_type,
+    ->        COUNT(*) AS Total_Residents
+    -> FROM Admissions
+    -> GROUP BY resident_type;
++---------------+-----------------+
+| resident_type | Total_Residents |
++---------------+-----------------+
+| Orphan        |               3 |
+| Old Age       |               3 |
++---------------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query finds the highest resident age using the MAX aggregate function.
+mysql>
+mysql> SELECT MAX(age) AS Highest_Age
+    -> FROM Residents;
++-------------+
+| Highest_Age |
++-------------+
+|          72 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> -- This query displays the total number of rooms available in each room type using COUNT and GROUP BY clauses.
+mysql>
+mysql> SELECT room_type,
+    ->        COUNT(*) AS Total_Rooms
+    -> FROM Rooms
+    -> GROUP BY room_type;
++-----------------+-------------+
+| room_type       | Total_Rooms |
++-----------------+-------------+
+| Children        |           3 |
+| Senior Citizens |           3 |
++-----------------+-------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> -- HARD QUERIES
+mysql>
+mysql> -- This query joins the Residents and Admissions tables to display resident names along with their admission dates and resident types.
+mysql>
+mysql> SELECT r.resident_name,
+    ->        a.admission_date,
+    ->        a.resident_type
+    -> FROM Residents r
+    -> JOIN Admissions a
+    -> ON r.resident_id = a.resident_id;
++---------------+----------------+---------------+
+| resident_name | admission_date | resident_type |
++---------------+----------------+---------------+
+| Rahul         | 2026-06-20     | Orphan        |
+| Priya         | 2026-06-20     | Orphan        |
+| Arjun         | 2026-06-21     | Old Age       |
+| Lakshmi       | 2026-06-22     | Old Age       |
+| Ramesh        | 2026-06-23     | Orphan        |
+| Sita          | 2026-06-24     | Old Age       |
++---------------+----------------+---------------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query joins the Rooms and Admissions tables to display room numbers along with resident admission details.
+mysql>
+mysql> SELECT rm.room_number,
+    ->        a.resident_type,
+    ->        a.status
+    -> FROM Rooms rm
+    -> JOIN Admissions a
+    -> ON rm.room_id = a.room_id;
++-------------+---------------+--------+
+| room_number | resident_type | status |
++-------------+---------------+--------+
+| R101        | Orphan        | Active |
+| R102        | Orphan        | Active |
+| R201        | Old Age       | Active |
+| R202        | Old Age       | Active |
+| R103        | Orphan        | Active |
+| R203        | Old Age       | Active |
++-------------+---------------+--------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query joins the Residents and Admissions tables and displays residents who belong to the old-age home.
+mysql>
+mysql> SELECT r.resident_name,
+    ->        a.resident_type
+    -> FROM Residents r
+    -> JOIN Admissions a
+    -> ON r.resident_id = a.resident_id
+    -> WHERE a.resident_type = 'Old Age';
++---------------+---------------+
+| resident_name | resident_type |
++---------------+---------------+
+| Arjun         | Old Age       |
+| Lakshmi       | Old Age       |
+| Sita          | Old Age       |
++---------------+---------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> -- This query joins the Caregivers and Rooms tables and counts the total number of rooms managed by each caregiver.
+mysql>
+mysql> SELECT c.caregiver_name,
+    ->        COUNT(r.room_id) AS Total_Rooms
+    -> FROM Caregivers c
+    -> JOIN Rooms r
+    -> ON c.caregiver_id = r.caregiver_id
+    -> GROUP BY c.caregiver_name;
++----------------+-------------+
+| caregiver_name | Total_Rooms |
++----------------+-------------+
+| Anita          |           1 |
+| Suresh         |           1 |
+| Meena          |           1 |
+| Rajesh         |           1 |
+| Deepa          |           1 |
+| Kiran          |           1 |
++----------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> -- :::::::::::::::::::::::::::::::::::::::::::::DESCRIPTION OF QUERIES::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+mysql> 
+mysql> -- EASY QUERY 1:
+mysql> -- This query displays the names and ages of residents whose age is greater than 60 using the WHERE clause.
+
+mysql> 
+mysql> -- EASY QUERY 2:
+mysql> -- This query displays the room numbers and room types of rooms allocated to senior citizens using the WHERE clause.
+
+mysql> 
+mysql> -- EASY QUERY 3:
+mysql> -- This query returns the admission IDs and statuses of active admissions using the WHERE clause.
+
+mysql> 
+mysql> -- EASY QUERY 4:
+mysql> -- This query displays caregivers whose experience is between 5 and 8 years using the BETWEEN operator.
+
+mysql> 
+mysql> -- INTERMEDIATE QUERY 1:
+mysql> -- This query calculates the average ticket price of all shows using the AVG aggregate function.
+mysql> 
+mysql> -- INTERMEDIATE QUERY 2:
+mysql> -- This query calculates the average age of all residents using the AVG aggregate function.
+
+mysql> 
+mysql> -- INTERMEDIATE QUERY 3:
+mysql> -- This query counts the total number of residents based on resident type using COUNT and GROUP BY clauses.
+
+mysql> 
+mysql> -- INTERMEDIATE QUERY 4:
+mysql> -- This query displays the total number of rooms available in each room type using COUNT and GROUP BY clauses.
+
+mysql> 
+mysql> -- HARD QUERY 1:
+mysql> -- This query joins the Residents and Admissions tables to display resident names along with their admission dates and resident types.
+
+mysql> 
+mysql> -- HARD QUERY 2:
+mysql> -- This query joins the Rooms and Admissions tables to display room numbers along with resident admission details.
+
+mysql> 
+mysql> -- HARD QUERY 3:
+mysql> -- This query joins the Residents and Admissions tables and displays residents who belong to the old-age home.
+
+mysql> 
+mysql> -- HARD QUERY 4:
+mysql> -- This query joins the Caregivers and Rooms tables and counts the total number of rooms managed by each caregiver.
+
+mysql> 
+mysql> 
+mysql> EXIT
